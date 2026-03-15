@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  validation_backend:
+    build: ./backend
+    container_name: validation_backend
+    restart: always
+    env_file:
+      - ./backend/.env
+    ports:
+      - "6380:8000"
+    volumes:
+      - ./backend:/app
+    networks:
+      - validation_network
+      - shared-db-network
+
+networks:
+  validation_network:
+    driver: bridge
+  shared-db-network:
+    external: true
