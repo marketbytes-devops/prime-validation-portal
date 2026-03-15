@@ -15,6 +15,15 @@ services:
       - validation_network
       - shared-db-network
 
+  validation_admin:
+    build: ./frontend/admin
+    container_name: validation_admin
+    restart: always
+    ports:
+      - "6381:80"
+    networks:
+      - validation_network
+
 networks:
   validation_network:
     driver: bridge
