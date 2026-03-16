@@ -9,7 +9,7 @@ import {
 } from 'react-icons/fa'
 
 // ─── Certificate Detail Card (Valid) ──────────────────────────────────────────
-const CertificateDetail = ({ cert }) => (
+const CertificateDetail = ({ cert, onOpenModal }) => (
   <div className="mt-4 sm:mt-6 w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
     <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-xl shadow-slate-200/50">
       <div className="flex items-center justify-between mb-4 sm:mb-6">
@@ -17,10 +17,18 @@ const CertificateDetail = ({ cert }) => (
           <h3 className="text-base sm:text-xl font-medium text-[#344482]">Equipment Details</h3>
           <p className="text-slate-500 text-[10px] sm:text-xs font-normal mt-1">Verified Record</p>
         </div>
-        <span className="flex items-center gap-1.5 sm:gap-2 rounded-full bg-emerald-50 border border-emerald-100 px-3 sm:px-4 py-1.5 sm:py-2 text-[9px] sm:text-[10px] font-medium text-emerald-700 uppercase tracking-tighter">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-          Active
-        </span>
+        <div className="flex flex-col items-end gap-2">
+          <span className="flex items-center gap-1.5 sm:gap-2 rounded-full bg-emerald-50 border border-emerald-100 px-3 sm:px-4 py-1.5 sm:py-2 text-[9px] sm:text-[10px] font-medium text-emerald-700 uppercase tracking-tighter">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            Active
+          </span>
+          <button 
+            onClick={onOpenModal}
+            className="text-[10px] text-[#344482] font-semibold underline hover:text-[#283566] transition-colors"
+          >
+            Request Re-Calibration
+          </button>
+        </div>
       </div>
       <div className="grid grid-cols-1 pb-3 sm:pb-4">
         <DetailRow label="Certificate Number" value={cert.certificate_number} bold />
@@ -60,8 +68,8 @@ const InvalidAlert = () => (
   </div>
 )
 
-// ─── Expired Modal ────────────────────────────────────────────────────────────
-const ExpiredModal = ({ cert, onClose }) => {
+// ─── Enquiry/Recalibration Modal ─────────────────────────────────────────────
+const EnquiryModal = ({ cert, onClose }) => {
   const [form, setForm] = useState({ customer_name: '', customer_email: '', customer_phone: '', message: '' })
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -81,22 +89,26 @@ const ExpiredModal = ({ cert, onClose }) => {
     }
   }
 
+  const isExpired = cert.is_expired
+
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl border border-slate-200 bg-white shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
         {!success ? (
           <>
-            <div className="bg-[#d9242a] px-4 sm:px-6 py-3 sm:py-4 text-white flex items-center justify-between sticky top-0 z-10">
-              <h3 className="text-sm sm:text-lg font-medium uppercase tracking-tight">Expired Certificate</h3>
+            <div className={`${isExpired ? 'bg-[#d9242a]' : 'bg-[#344482]'} px-4 sm:px-6 py-3 sm:py-4 text-white flex items-center justify-between sticky top-0 z-10`}>
+              <h3 className="text-sm sm:text-lg font-medium uppercase tracking-tight">
+                {isExpired ? 'Expired Certificate' : 'Request Re-Calibration'}
+              </h3>
               <button onClick={onClose} className="text-white/80 hover:text-white transition-colors">
                 <FaTimes className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
             </div>
 
             <div className="p-4 sm:p-6">
-              <div className="bg-red-50 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6 border border-red-100">
+              <div className={`${isExpired ? 'bg-red-50 border-red-100' : 'bg-blue-50 border-blue-100'} rounded-xl p-3 sm:p-4 mb-4 sm:mb-6 border`}>
                 <p className="text-slate-700 text-[11px] sm:text-xs font-normal leading-relaxed">
-                  Record <span className="text-[#d9242a] font-medium">{cert.certificate_number}</span> expired on <span className="font-medium">{formatDate(cert.calibration_due_date)}</span>. Request service now.
+                  Record <span className={`${isExpired ? 'text-[#d9242a]' : 'text-[#344482]'} font-medium`}>{cert.certificate_number}</span> {isExpired ? `expired on ${formatDate(cert.calibration_due_date)}.` : 'is currently active.'} Request service now.
                 </p>
               </div>
 
@@ -108,11 +120,11 @@ const ExpiredModal = ({ cert, onClose }) => {
                   <label className="block text-[10px] font-medium text-slate-400 uppercase tracking-widest mb-1">Details</label>
                   <textarea value={form.message} onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
                     rows={2} placeholder="Recalibration needs…"
-                    className="w-full rounded-xl bg-slate-50 border border-slate-200 px-3 sm:px-4 py-2 text-sm font-normal outline-none focus:border-[#d9242a] transition-all resize-none" />
+                    className={`w-full rounded-xl bg-slate-50 border border-slate-200 px-3 sm:px-4 py-2 text-sm font-normal outline-none transition-all resize-none focus:border-${isExpired ? '[#d9242a]' : '[#344482]'}`} />
                 </div>
                 {error && <p className="text-[#d9242a] text-xs font-medium">{error}</p>}
                 <button type="submit" disabled={loading}
-                  className="w-full py-3.5 sm:py-4 rounded-xl bg-[#d9242a] text-white font-medium text-xs sm:text-sm uppercase tracking-widest hover:bg-[#b81d22] transition-all shadow-md">
+                  className={`w-full py-3.5 sm:py-4 rounded-xl text-white font-medium text-xs sm:text-sm uppercase tracking-widest transition-all shadow-md ${isExpired ? 'bg-[#d9242a] hover:bg-[#b81d22]' : 'bg-[#344482] hover:bg-[#283566]'}`}>
                   {loading ? 'Sending…' : 'Request Recalibration'}
                 </button>
               </form>
@@ -213,7 +225,7 @@ export default function CheckPage() {
         {/* Dynamic Results */}
         {result && (
           result.found
-            ? (!result.is_expired && <CertificateDetail cert={result} />)
+            ? (!result.is_expired && <CertificateDetail cert={result} onOpenModal={() => setShowModal(true)} />)
             : <InvalidAlert />
         )}
 
@@ -232,7 +244,7 @@ export default function CheckPage() {
         )}
       </main>
 
-      {showModal && <ExpiredModal cert={result} onClose={() => setShowModal(false)} />}
+      {showModal && <EnquiryModal cert={result} onClose={() => setShowModal(false)} />}
     </div>
   )
 }
