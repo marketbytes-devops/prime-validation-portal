@@ -40,6 +40,7 @@ export const deleteCertificate = (id) => api.delete(`/admin/certificates/${id}/`
 // ─── Enquiries ────────────────────────────────────────────────────────────────
 export const getEnquiries = (params) => api.get('/admin/enquiries/', { params })
 export const updateEnquiry = (id, data) => api.put(`/admin/enquiries/${id}/`, data)
+export const deleteEnquiry = (id) => api.delete(`/admin/enquiries/${id}/`)
 
 // ─── Dashboard ────────────────────────────────────────────────────────────────
 export const getDashboardStats = () => api.get('/admin/dashboard/')

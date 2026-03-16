@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import DashboardLayout from '../components/DashboardLayout'
-import { getEnquiries, updateEnquiry } from '../api/api'
+import { getEnquiries, updateEnquiry, deleteEnquiry } from '../api/api'
 import {
   FaSearch,
   FaSpinner,
   FaCalendarAlt,
   FaCheckCircle,
   FaExclamationCircle,
-  FaTimes
+  FaTimes,
+  FaTrash,
+  FaChevronLeft,
+  FaChevronRight
 } from 'react-icons/fa'
 
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'
@@ -23,21 +26,35 @@ export default function RecalibrationRequests() {
   const [resolveLoading, setResolveLoading] = useState(false)
   const [resolveError, setResolveError] = useState('')
 
+  // Delete state
+  const [delEnqId, setDelEnqId] = useState(null)
+
+  // Pagination state
+  const [page, setPage] = useState(1)
+  const [totalItems, setTotalItems] = useState(0)
+  const itemsPerPage = 20
+
   // Toast notifications
   const [toast, setToast] = useState(null)
 
   const fetchEnquiries = async () => {
     setLoading(true)
     try {
-      const params = {}
+      const params = { page: page }
       if (filters.status) params.status = filters.status
       if (filters.search) params.search = filters.search
       const res = await getEnquiries(params)
       setEnquiries(res.data.results)
+      setTotalItems(res.data.count || res.data.results.length)
     } catch { setEnquiries([]) } finally { setLoading(false) }
   }
 
-  useEffect(() => { fetchEnquiries() }, [filters])
+  useEffect(() => { 
+    setPage(1)
+    fetchEnquiries() 
+  }, [filters])
+
+  useEffect(() => { fetchEnquiries() }, [page])
 
   // Show toast with auto-dismiss
   const showToast = (message, type = 'success') => {
@@ -85,6 +102,19 @@ export default function RecalibrationRequests() {
     }
   }
 
+  // Handle Delete
+  const handleDelete = async () => {
+    if (!delEnqId) return
+    try {
+      await deleteEnquiry(delEnqId)
+      showToast('Request deleted successfully.')
+      setDelEnqId(null)
+      fetchEnquiries()
+    } catch {
+      showToast('Failed to delete request.', 'error')
+    }
+  }
+
   const openResolveModal = (enq) => {
     setResolveEnq(enq)
     setResolveForm({
@@ -115,14 +145,14 @@ export default function RecalibrationRequests() {
           <label className="block text-[10px] text-slate-600 uppercase tracking-widest mb-1.5">Request Search</label>
           <div className="relative">
             <input type="text" value={filters.search} placeholder="Customer name or ID…"
-              onChange={e => setF('search', e.target.value)}
+              onChange={e => setFilters(f => ({ ...f, search: e.target.value }))}
               className="w-full bg-slate-50 border-2 border-slate-100 rounded-xl px-4 py-2.5 pl-10 outline-none focus:border-[#344482] focus:bg-white transition-all font-semibold text-sm" />
             <FaSearch className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
           </div>
         </div>
         <div className="w-full sm:w-auto">
           <label className="block text-[10px] text-slate-600 uppercase tracking-widest mb-1.5">Status</label>
-          <select value={filters.status} onChange={e => setF('status', e.target.value)}
+          <select value={filters.status} onChange={e => setFilters(f => ({ ...f, status: e.target.value }))}
             className="w-full bg-slate-50 border-2 border-slate-100 rounded-xl px-4 py-2.5 outline-none focus:border-[#344482] focus:bg-white transition-all font-semibold text-sm min-w-[140px]">
             <option value="">All Leads</option>
             <option value="pending">Pending</option>
@@ -197,6 +227,11 @@ export default function RecalibrationRequests() {
                             Reopen
                           </button>
                         )}
+                        {/* Delete Button */}
+                        <button onClick={() => setDelEnqId(enq.id)}
+                          className="p-2 rounded-xl text-secondary hover:bg-red-50 transition-all border border-red-100 flex items-center justify-center">
+                          <FaTrash className="w-4 h-4" />
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -205,12 +240,67 @@ export default function RecalibrationRequests() {
             </table>
           </div>
         )}
+
+        {/* Pagination Controls */}
+        {!loading && enquiries.length > 0 && totalItems > itemsPerPage && (
+          <div className="bg-slate-50/50 px-6 py-4 border-t border-slate-200 flex items-center justify-between">
+            <p className="text-xs font-semibold text-slate-500">
+              Showing <span className="text-primary">{(page - 1) * itemsPerPage + 1}</span> to <span className="text-primary">{Math.min(page * itemsPerPage, totalItems)}</span> of <span className="text-primary">{totalItems}</span> results
+            </p>
+            <div className="flex gap-2">
+              <button
+                disabled={page === 1}
+                onClick={() => setPage(p => p - 1)}
+                className="p-2 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-primary hover:border-primary transition-all disabled:opacity-40 disabled:hover:text-slate-400 disabled:hover:border-slate-200"
+              >
+                <FaChevronLeft className="w-3 h-3" />
+              </button>
+              {Array.from({ length: Math.ceil(totalItems / itemsPerPage) }, (_, i) => i + 1).map(p => (
+                <button
+                  key={p}
+                  onClick={() => setPage(p)}
+                  className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${page === p ? 'bg-primary text-white shadow-lg shadow-blue-900/20' : 'bg-white border border-slate-200 text-slate-400 hover:text-primary hover:border-primary'}`}
+                >
+                  {p}
+                </button>
+              ))}
+              <button
+                disabled={page === Math.ceil(totalItems / itemsPerPage)}
+                onClick={() => setPage(p => p + 1)}
+                className="p-2 rounded-lg bg-white border border-slate-200 text-slate-400 hover:text-primary hover:border-primary transition-all disabled:opacity-40 disabled:hover:text-slate-400 disabled:hover:border-slate-200"
+              >
+                <FaChevronRight className="w-3 h-3" />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
 
+      {/* Delete Confirmation Modal */}
+      {delEnqId && (
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in" onClick={(e) => e.target === e.currentTarget && setDelEnqId(null)}>
+          <div className="bg-white rounded-4xl w-full max-w-sm shadow-2xl border border-slate-100 p-8 text-center animate-in zoom-in-95 duration-200">
+            <div className="w-16 h-16 rounded-3xl bg-red-50 flex items-center justify-center mx-auto mb-6 border border-red-100 text-secondary">
+              <FaTrash className="w-8 h-8" />
+            </div>
+            <h3 className="text-xl font-bold text-slate-900 mb-2 uppercase tracking-tight">Delete Request?</h3>
+            <p className="text-slate-500 font-semibold text-sm mb-8 leading-relaxed">This recalibration request will be permanently removed. This action cannot be undone.</p>
+            <div className="space-y-3">
+              <button onClick={handleDelete} className="w-full py-4 rounded-2xl bg-secondary text-white font-bold text-xs uppercase tracking-widest shadow-lg shadow-red-900/20 hover:bg-red-600 transition-all">
+                Confirm Delete
+              </button>
+              <button onClick={() => setDelEnqId(null)} className="w-full py-3 text-slate-400 font-bold text-xs uppercase tracking-widest hover:text-slate-600 transition-all">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Resolve Request Modal */}
       {resolveEnq && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in" onClick={handleOutsideClick}>
-          <div ref={modalRef} className="bg-white rounded-[2rem] w-full max-w-md shadow-2xl border border-slate-100 overflow-hidden animate-in zoom-in-95 duration-200">
+          <div ref={modalRef} className="bg-white rounded-4xl w-full max-w-md shadow-2xl border border-slate-100 overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="bg-[#344482] px-6 py-4 text-white flex items-center justify-between">
               <h3 className="text-base font-bold uppercase tracking-tight">Resolve Request</h3>
               <button onClick={() => setResolveEnq(null)} className="text-white/80 hover:text-white transition-colors">

@@ -12,19 +12,19 @@ import {
 const CertificateDetail = ({ cert, onOpenModal }) => (
   <div className="mt-4 sm:mt-6 w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
     <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 shadow-xl shadow-slate-200/50">
-      <div className="flex items-center justify-between mb-4 sm:mb-6">
-        <div>
-          <h3 className="text-base sm:text-xl font-medium text-[#344482]">Equipment Details</h3>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div className="text-center sm:text-left">
+          <h3 className="text-base sm:text-xl font-medium text-primary">Equipment Details</h3>
           <p className="text-slate-500 text-[10px] sm:text-xs font-normal mt-1">Verified Record</p>
         </div>
-        <div className="flex flex-col items-end gap-2">
-          <span className="flex items-center gap-1.5 sm:gap-2 rounded-full bg-emerald-50 border border-emerald-100 px-3 sm:px-4 py-1.5 sm:py-2 text-[9px] sm:text-[10px] font-medium text-emerald-700 uppercase tracking-tighter">
+        <div className="flex flex-wrap items-center justify-center sm:justify-end gap-2 sm:gap-4">
+          <span className="flex items-center gap-1.5 sm:gap-2 rounded-xl bg-emerald-50 border border-emerald-100 px-3 sm:px-4 py-1.5 sm:py-2 text-[10px] font-medium text-emerald-700 uppercase tracking-tighter h-fit">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             Active
           </span>
           <button 
             onClick={onOpenModal}
-            className="text-[10px] text-[#344482] font-semibold underline hover:text-[#283566] transition-colors"
+            className="flex-1 sm:flex-none px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-primary text-white font-medium uppercase tracking-widest text-[10px] hover:bg-[#283566] transition-all shadow-lg shadow-blue-900/10 flex items-center justify-center whitespace-nowrap"
           >
             Request Re-Calibration
           </button>
@@ -46,20 +46,20 @@ const CertificateDetail = ({ cert, onOpenModal }) => (
 
 const DetailRow = ({ label, value, bold, highlight, full }) => (
   <div className={`rounded-xl bg-slate-50 border border-slate-100 p-3 sm:p-4 ${full ? 'sm:col-span-2' : ''}`}>
-    <p className="text-[9px] sm:text-[10px] font-medium text-slate-400 uppercase tracking-widest mb-1">{label}</p>
-    <p className={`text-xs sm:text-sm font-medium ${highlight ? 'text-[#d9242a]' : bold ? 'text-[#344482]' : 'text-slate-900'}`}>{value}</p>
+    <p className="text-[10px] sm:text-[10px] font-medium text-slate-400 uppercase tracking-widest mb-1">{label}</p>
+    <p className={`text-xs sm:text-sm font-medium ${highlight ? 'text-secondary' : bold ? 'text-primary' : 'text-slate-900'}`}>{value}</p>
   </div>
 )
 
 // ─── Invalid Alert ────────────────────────────────────────────────────────────
 const InvalidAlert = () => (
   <div className="mt-4 sm:mt-6 w-full animate-in fade-in zoom-in-95 duration-300">
-    <div className="rounded-2xl border-2 border-[#d9242a]/10 bg-white p-4 sm:p-6 flex gap-3 sm:gap-4 items-start shadow-xl shadow-red-100/50">
+    <div className="rounded-2xl border-2 border-secondary/10 bg-white p-4 sm:p-6 flex gap-3 sm:gap-4 items-start shadow-xl shadow-red-100/50">
       <div className="shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-red-50 flex items-center justify-center border border-red-100">
-        <FaExclamationTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-[#d9242a]" />
+        <FaExclamationTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-secondary" />
       </div>
       <div>
-        <h4 className="text-[#d9242a] font-medium text-sm sm:text-base mb-1">Verification Failed</h4>
+        <h4 className="text-secondary font-medium text-sm sm:text-base mb-1">Verification Failed</h4>
         <p className="text-slate-600 text-[11px] sm:text-xs leading-relaxed font-normal">
           The certificate number entered could not be located. Please check the ID on your document.
         </p>
@@ -92,15 +92,15 @@ const EnquiryModal = ({ cert, onClose }) => {
   const isExpired = cert.is_expired
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl border border-slate-200 bg-white shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="w-full sm:max-w-md rounded-2xl border border-slate-200 bg-white shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
         {!success ? (
           <>
-            <div className={`${isExpired ? 'bg-[#d9242a]' : 'bg-[#344482]'} px-4 sm:px-6 py-3 sm:py-4 text-white flex items-center justify-between sticky top-0 z-10`}>
-              <h3 className="text-sm sm:text-lg font-medium uppercase tracking-tight">
+            <div className={`${isExpired ? 'bg-secondary' : 'bg-primary'} px-4 sm:px-6 py-3 sm:py-4 text-white flex items-center justify-center sticky top-0 z-10`}>
+              <h3 className="text-sm sm:text-lg font-medium uppercase tracking-tight text-center">
                 {isExpired ? 'Expired Certificate' : 'Request Re-Calibration'}
               </h3>
-              <button onClick={onClose} className="text-white/80 hover:text-white transition-colors">
+              <button onClick={onClose} className="absolute right-4 sm:right-6 text-white/80 hover:text-white transition-colors">
                 <FaTimes className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
             </div>
@@ -108,7 +108,7 @@ const EnquiryModal = ({ cert, onClose }) => {
             <div className="p-4 sm:p-6">
               <div className={`${isExpired ? 'bg-red-50 border-red-100' : 'bg-blue-50 border-blue-100'} rounded-xl p-3 sm:p-4 mb-4 sm:mb-6 border`}>
                 <p className="text-slate-700 text-[11px] sm:text-xs font-normal leading-relaxed">
-                  Record <span className={`${isExpired ? 'text-[#d9242a]' : 'text-[#344482]'} font-medium`}>{cert.certificate_number}</span> {isExpired ? `expired on ${formatDate(cert.calibration_due_date)}.` : 'is currently active.'} Request service now.
+                  Record <span className={`${isExpired ? 'text-secondary' : 'text-primary'} font-medium`}>{cert.certificate_number}</span> {isExpired ? `expired on ${formatDate(cert.calibration_due_date)}.` : 'is currently active.'} Request service now.
                 </p>
               </div>
 
@@ -120,11 +120,11 @@ const EnquiryModal = ({ cert, onClose }) => {
                   <label className="block text-[10px] font-medium text-slate-400 uppercase tracking-widest mb-1">Details</label>
                   <textarea value={form.message} onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
                     rows={2} placeholder="Recalibration needs…"
-                    className={`w-full rounded-xl bg-slate-50 border border-slate-200 px-3 sm:px-4 py-2 text-sm font-normal outline-none transition-all resize-none focus:border-${isExpired ? '[#d9242a]' : '[#344482]'}`} />
+                    className={`w-full rounded-xl bg-slate-50 border border-slate-200 px-3 sm:px-4 py-2 text-sm font-normal outline-none transition-all resize-none focus:border-${isExpired ? 'secondary' : 'primary'}`} />
                 </div>
-                {error && <p className="text-[#d9242a] text-xs font-medium">{error}</p>}
+                {error && <p className="text-secondary text-xs font-medium">{error}</p>}
                 <button type="submit" disabled={loading}
-                  className={`w-full py-3.5 sm:py-4 rounded-xl text-white font-medium text-xs sm:text-sm uppercase tracking-widest transition-all shadow-md ${isExpired ? 'bg-[#d9242a] hover:bg-[#b81d22]' : 'bg-[#344482] hover:bg-[#283566]'}`}>
+                  className={`w-full py-3.5 sm:py-4 rounded-xl text-white font-medium text-xs sm:text-sm uppercase tracking-widest transition-all shadow-md ${isExpired ? 'bg-secondary hover:bg-[#b81d22]' : 'bg-primary hover:bg-[#283566]'}`}>
                   {loading ? 'Sending…' : 'Request Recalibration'}
                 </button>
               </form>
@@ -137,7 +137,7 @@ const EnquiryModal = ({ cert, onClose }) => {
             </div>
             <h3 className="text-slate-900 font-medium text-lg sm:text-xl mb-1">Request Sent</h3>
             <p className="text-slate-500 text-sm font-normal mb-6">We'll contact you shortly.</p>
-            <button onClick={onClose} className="w-full py-3 rounded-xl bg-[#344482] text-white font-medium">Close</button>
+            <button onClick={onClose} className="w-full py-3 rounded-xl bg-primary text-white font-medium">Close</button>
           </div>
         )}
       </div>
@@ -149,7 +149,7 @@ const Input = ({ label, type = 'text', value, onChange, required }) => (
   <div>
     <label className="block text-[10px] font-medium text-slate-400 uppercase tracking-widest mb-1">{label} {required && '*'}</label>
     <input type={type} value={value} onChange={e => onChange(e.target.value)} required={required}
-      className="w-full rounded-xl bg-slate-50 border border-slate-200 px-3 sm:px-4 py-2.5 sm:py-2 text-sm font-normal outline-none focus:border-[#344482] transition-all" />
+      className="w-full rounded-xl bg-slate-50 border border-slate-200 px-3 sm:px-4 py-2.5 sm:py-2 text-sm font-normal outline-none focus:border-primary transition-all" />
   </div>
 )
 
@@ -185,14 +185,14 @@ export default function CheckPage() {
   return (
     <div className="w-full min-h-screen flex flex-col items-center bg-white pb-6">
       {/* Main Content */}
-      <main className="w-full max-w-xl px-4 sm:px-6 flex flex-col items-center justify-center flex-1">
+      <main className="w-full max-w-3xl px-4 sm:px-6 flex flex-col items-center justify-center flex-1">
         <div className="text-center my-6 md:my-12">
-          <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 sm:px-4 py-1.5 text-[#344482] text-[8px] sm:text-[9px] font-medium uppercase tracking-widest mb-3 sm:mb-4 border border-blue-100">
-            <span className="w-1 h-1 rounded-full bg-[#344482]" />
+          <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 sm:px-4 py-1.5 text-primary text-[10px] font-medium uppercase tracking-widest mb-3 sm:mb-4 border border-blue-100">
+            <span className="w-1 h-1 rounded-full bg-primary" />
             Real-time Status
           </div>
           <h2 className="text-xl sm:text-4xl font-medium text-slate-900 leading-[1.1] mb-3 sm:mb-4 tracking-tighter">
-            <span className="pb-1 sm:pb-2 block">Check Your </span><span className="text-[#344482]">Calibration Status</span>
+            <span className="pb-1 sm:pb-2 block">Check Your </span><span className="text-primary">Calibration Status</span>
           </h2>
           <p className="text-slate-500 text-xs sm:text-sm font-normal leading-relaxed max-w-sm mx-auto">
             Secure validation for instrument certificates and equipment compliance.
@@ -207,13 +207,13 @@ export default function CheckPage() {
               value={certNumber}
               onChange={e => setCertNumber(e.target.value)}
               placeholder="Enter Certificate Serial Number…"
-              className="flex-1 rounded-xl bg-slate-50 text-slate-900 placeholder:text-slate-400 px-4 sm:px-5 py-3.5 sm:py-4 font-normal outline-none focus:bg-white focus:border-[#344482] border-2 border-transparent transition-all text-sm"
+              className="flex-1 rounded-xl bg-slate-50 text-slate-900 placeholder:text-slate-400 px-4 sm:px-5 py-3.5 sm:py-4 font-normal outline-none focus:bg-white focus:border-primary border-2 border-transparent transition-all text-sm"
               autoFocus
             />
             <button
               type="submit"
               disabled={loading || !certNumber.trim()}
-              className="px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-[#344482] text-white font-medium uppercase tracking-widest text-xs hover:bg-[#283566] transition-all shadow-lg shadow-blue-900/10 disabled:opacity-50 flex items-center justify-center gap-2"
+              className="px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-primary text-white font-medium uppercase tracking-widest text-xs hover:bg-[#283566] transition-all shadow-lg shadow-blue-900/10 disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {loading ? (
                 <FaSpinner className="w-4 h-4 animate-spin" />
@@ -231,12 +231,12 @@ export default function CheckPage() {
 
         {result?.found && result.is_expired && (
           <div className="mt-4 sm:mt-6 w-full animate-in fade-in slide-in-from-top-4 duration-300">
-            <div className="rounded-2xl border-2 border-[#d9242a]/10 bg-white p-4 sm:p-6 flex gap-3 sm:gap-4 items-start shadow-xl shadow-red-100/50">
+            <div className="rounded-2xl border-2 border-secondary/10 bg-white p-4 sm:p-6 flex gap-3 sm:gap-4 items-start shadow-xl shadow-red-100/50">
               <div className="shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-red-50 flex items-center justify-center border border-red-100">
-                <FaExclamationCircle className="w-4 h-4 sm:w-5 sm:h-5 text-[#d9242a]" />
+                <FaExclamationCircle className="w-4 h-4 sm:w-5 sm:h-5 text-secondary" />
               </div>
               <div className="flex-1">
-                <h4 className="text-[#d9242a] font-bold text-sm sm:text-base mb-1 leading-tight">Certificate Expired</h4>
+                <h4 className="text-secondary font-bold text-sm sm:text-base mb-1 leading-tight">Certificate Expired</h4>
                 <p className="text-slate-600 text-[11px] sm:text-xs font-normal">This record expired on <span className="font-normal">{formatDate(result.calibration_due_date)}</span>.</p>
               </div>
             </div>
