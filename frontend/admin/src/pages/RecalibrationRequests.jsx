@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import DashboardLayout from '../components/DashboardLayout'
-import { getEnquiries, updateEnquiry, deleteEnquiry } from '../api/api'
+import { getEnquiries, updateEnquiry } from '../api/api'
 import {
   FaSearch,
   FaSpinner,
@@ -8,7 +8,6 @@ import {
   FaCheckCircle,
   FaExclamationCircle,
   FaTimes,
-  FaTrash,
   FaChevronLeft,
   FaChevronRight
 } from 'react-icons/fa'
@@ -26,8 +25,6 @@ export default function RecalibrationRequests() {
   const [resolveLoading, setResolveLoading] = useState(false)
   const [resolveError, setResolveError] = useState('')
 
-  // Delete state
-  const [delEnqId, setDelEnqId] = useState(null)
 
   // Pagination state
   const [page, setPage] = useState(1)
@@ -102,18 +99,6 @@ export default function RecalibrationRequests() {
     }
   }
 
-  // Handle Delete
-  const handleDelete = async () => {
-    if (!delEnqId) return
-    try {
-      await deleteEnquiry(delEnqId)
-      showToast('Request deleted successfully.')
-      setDelEnqId(null)
-      fetchEnquiries()
-    } catch {
-      showToast('Failed to delete request.', 'error')
-    }
-  }
 
   const openResolveModal = (enq) => {
     setResolveEnq(enq)
@@ -227,11 +212,7 @@ export default function RecalibrationRequests() {
                             Reopen
                           </button>
                         )}
-                        {/* Delete Button */}
-                        <button onClick={() => setDelEnqId(enq.id)}
-                          className="p-2 rounded-xl text-secondary hover:bg-red-50 transition-all border border-red-100 flex items-center justify-center">
-                          <FaTrash className="w-4 h-4" />
-                        </button>
+
                       </div>
                     </td>
                   </tr>
@@ -277,26 +258,7 @@ export default function RecalibrationRequests() {
       </div>
 
 
-      {/* Delete Confirmation Modal */}
-      {delEnqId && (
-        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in" onClick={(e) => e.target === e.currentTarget && setDelEnqId(null)}>
-          <div className="bg-white rounded-4xl w-full max-w-sm shadow-2xl border border-slate-100 p-8 text-center animate-in zoom-in-95 duration-200">
-            <div className="w-16 h-16 rounded-3xl bg-red-50 flex items-center justify-center mx-auto mb-6 border border-red-100 text-secondary">
-              <FaTrash className="w-8 h-8" />
-            </div>
-            <h3 className="text-xl font-bold text-slate-900 mb-2 uppercase tracking-tight">Delete Request?</h3>
-            <p className="text-slate-500 font-semibold text-sm mb-8 leading-relaxed">This recalibration request will be permanently removed. This action cannot be undone.</p>
-            <div className="space-y-3">
-              <button onClick={handleDelete} className="w-full py-4 rounded-2xl bg-secondary text-white font-bold text-xs uppercase tracking-widest shadow-lg shadow-red-900/20 hover:bg-red-600 transition-all">
-                Confirm Delete
-              </button>
-              <button onClick={() => setDelEnqId(null)} className="w-full py-3 text-slate-400 font-bold text-xs uppercase tracking-widest hover:text-slate-600 transition-all">
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+
       {/* Resolve Request Modal */}
       {resolveEnq && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in" onClick={handleOutsideClick}>
