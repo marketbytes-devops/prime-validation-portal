@@ -48,7 +48,7 @@ export default function Dashboard() {
           <span className="text-[9px] sm:text-[10px] text-[#344482] uppercase tracking-[0.2em]">Compliance Overview</span>
         </div>
         <h2 className="text-3xl sm:text-5xl font-bold text-slate-900 leading-tight tracking-tighter mb-2 sm:mb-4">
-          Prime Customer <br /> <span className="text-[#344482]">Validation Dashboard</span>
+          Prime Cerficate <br /> <span className="text-[#344482]">Validation Dashboard</span>
         </h2>
       </div>
 

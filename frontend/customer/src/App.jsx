@@ -5,7 +5,7 @@ import './index.css'
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/customer">
       <Routes>
         <Route path="/" element={<CheckPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />

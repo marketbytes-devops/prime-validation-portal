@@ -169,7 +169,7 @@ class ForgotPasswordView(APIView):
 
         # Send OTP email in background thread
         send_mail_async(
-            subject='Password Reset OTP — Prime Customer Validation',
+            subject='Password Reset OTP — Prime Cerficate Validation',
             message=(
                 f"Hello {user.first_name or user.username},\n\n"
                 f"Your password reset OTP is: {token.otp}\n\n"

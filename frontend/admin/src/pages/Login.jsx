@@ -2,12 +2,12 @@ import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { login } from '../api/api'
 import { useAuth } from '../context/AuthContext'
-import { 
-  FaShieldAlt, 
-  FaEye, 
-  FaEyeSlash, 
-  FaExclamationCircle, 
-  FaSpinner 
+import {
+  FaShieldAlt,
+  FaEye,
+  FaEyeSlash,
+  FaExclamationCircle,
+  FaSpinner
 } from 'react-icons/fa'
 import logo from '../assets/logo.webp'
 
@@ -43,7 +43,7 @@ export default function Login() {
             <img src={logo} alt="Prime Innovation Logo" className="h-20 w-auto object-contain" />
           </div>
           <h1 className="text-3xl font-semibold text-[#344482]">Admin Portal</h1>
-          <p className="text-slate-500 font-medium mt-1">Prime Customer Validation System</p>
+          <p className="text-slate-500 font-medium mt-1">Prime Cerficate Validation System</p>
         </div>
 
         {/* Login Card */}
@@ -123,7 +123,7 @@ export default function Login() {
 
         {/* Footer info */}
         <p className="mt-8 text-center text-slate-400 text-xs">
-          © {new Date().getFullYear()} Prime Customer Validation. All rights reserved.
+          © {new Date().getFullYear()} Prime Innovation. All rights reserved.
         </p>
       </div>
     </div>
