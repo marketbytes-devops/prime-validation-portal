@@ -67,7 +67,13 @@ export default function CertificateList() {
 
   const handleEditOpen = (cert) => {
     setEditId(cert.id)
-    setEditForm({ certificate_number: cert.certificate_number, calibration_date: cert.calibration_date, calibration_due_date: cert.calibration_due_date, description: cert.description || '' })
+    setEditForm({ 
+      certificate_number: cert.certificate_number, 
+      client_name: cert.client_name || '',
+      calibration_date: cert.calibration_date, 
+      calibration_due_date: cert.calibration_due_date, 
+      description: cert.description || '' 
+    })
   }
 
   const handleEditSave = async () => {
@@ -149,7 +155,7 @@ export default function CertificateList() {
             <table className="w-full text-left">
               <thead>
                 <tr className="bg-slate-50/50 text-slate-600 border-b border-slate-100">
-                  {['Certificate ID', 'Calibrated', 'Expiry Date', 'Status', 'Actions'].map(h => (
+                  {['Certificate ID', 'Client Name', 'Calibrated', 'Expiry Date', 'Status', 'Actions'].map(h => (
                     <th key={h} className="text-[10px] font-bold uppercase tracking-[0.15em] px-6 py-4">{h}</th>
                   ))}
                 </tr>
@@ -159,6 +165,9 @@ export default function CertificateList() {
                   <tr key={cert.id} className="hover:bg-slate-50/50 transition-colors">
                     <td className="px-6 py-5">
                       <p className="text-primary font-semibold text-sm">{cert.certificate_number}</p>
+                    </td>
+                    <td className="px-6 py-5">
+                      <p className="text-slate-600 font-semibold text-xs">{cert.client_name || '—'}</p>
                     </td>
                     <td className="px-6 py-5 text-slate-500 font-semibold text-xs">{fmtDate(cert.calibration_date)}</td>
                     <td className="px-6 py-5 text-slate-500 font-semibold text-xs">{fmtDate(cert.calibration_due_date)}</td>
@@ -227,7 +236,10 @@ export default function CertificateList() {
           <div ref={editModalRef} className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-6 border border-slate-200">
             <h3 className="text-xl font-bold text-primary mb-6 uppercase tracking-tight">Edit Record</h3>
             <div className="space-y-4">
-              <ModalInput label="ID Number" value={editForm.certificate_number} onChange={v => setEditForm(f => ({ ...f, certificate_number: v }))} />
+              <div className="grid grid-cols-2 gap-4">
+                <ModalInput label="ID Number" value={editForm.certificate_number} onChange={v => setEditForm(f => ({ ...f, certificate_number: v }))} />
+                <ModalInput label="Client Name" value={editForm.client_name} onChange={v => setEditForm(f => ({ ...f, client_name: v }))} />
+              </div>
               <div className="grid grid-cols-2 gap-4">
                 <ModalInput label="Calibration" type="date" value={editForm.calibration_date} onChange={v => setEditForm(f => ({ ...f, calibration_date: v }))} />
                 <ModalInput label="Due Date" type="date" value={editForm.calibration_due_date} onChange={v => setEditForm(f => ({ ...f, calibration_due_date: v }))} red />
