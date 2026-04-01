@@ -22,7 +22,7 @@ const CertificateDetail = ({ cert, onOpenModal }) => (
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             Active
           </span>
-          <button 
+          <button
             onClick={onOpenModal}
             className="flex-1 sm:flex-none px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-primary text-white font-medium uppercase tracking-widest text-[10px] hover:bg-[#283566] transition-all shadow-lg shadow-blue-900/10 flex items-center justify-center whitespace-nowrap"
           >
