@@ -8,6 +8,7 @@ class Certificate(models.Model):
     certificate_number = models.CharField(max_length=100, unique=True)
     calibration_date = models.DateField()
     calibration_due_date = models.DateField()
+    client_name = models.CharField(max_length=255, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

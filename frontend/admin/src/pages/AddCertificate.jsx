@@ -6,7 +6,7 @@ import { FaChevronLeft, FaCheckCircle, FaExclamationCircle } from 'react-icons/f
 
 export default function AddCertificate() {
   const navigate = useNavigate()
-  const [form, setForm] = useState({ certificate_number: '', calibration_date: '', calibration_due_date: '', description: '' })
+  const [form, setForm] = useState({ certificate_number: '', client_name: '', calibration_date: '', calibration_due_date: '', description: '' })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
@@ -58,12 +58,21 @@ export default function AddCertificate() {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-1.5">Certificate / ID Number *</label>
-                <input type="text" required value={form.certificate_number}
-                  onChange={e => set('certificate_number', e.target.value)}
-                  placeholder="CERT-2024-001"
-                  className="w-full bg-slate-50 border-2 border-slate-100 rounded-xl px-4 py-3 text-sm font-semibold outline-none focus:border-[#344482] focus:bg-white transition-all" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-1.5">Certificate / ID Number *</label>
+                  <input type="text" required value={form.certificate_number}
+                    onChange={e => set('certificate_number', e.target.value)}
+                    placeholder="CERT-2024-001"
+                    className="w-full bg-slate-50 border-2 border-slate-100 rounded-xl px-4 py-3 text-sm font-semibold outline-none focus:border-[#344482] focus:bg-white transition-all" />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-1.5">Client Name</label>
+                  <input type="text" value={form.client_name}
+                    onChange={e => set('client_name', e.target.value)}
+                    placeholder="Acme Corporation"
+                    className="w-full bg-slate-50 border-2 border-slate-100 rounded-xl px-4 py-3 text-sm font-semibold outline-none focus:border-[#344482] focus:bg-white transition-all" />
+                </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

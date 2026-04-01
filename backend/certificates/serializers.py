@@ -10,7 +10,7 @@ class CertificateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Certificate
         fields = [
-            'id', 'certificate_number', 'calibration_date',
+            'id', 'certificate_number', 'client_name', 'calibration_date',
             'calibration_due_date', 'description',
             'is_expired', 'status', 'created_at', 'updated_at'
         ]
@@ -31,7 +31,7 @@ class CertificateCheckSerializer(serializers.ModelSerializer):
     class Meta:
         model = Certificate
         fields = [
-            'id', 'certificate_number', 'calibration_date',
+            'id', 'certificate_number', 'client_name', 'calibration_date',
             'calibration_due_date', 'description',
             'is_expired', 'status'
         ]
